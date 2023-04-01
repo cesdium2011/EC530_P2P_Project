@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peer-to-Peer Chat APP</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+
+        #chat {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            overflow-y:scroll;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="chat"></div>
+    <form id="form" autocomplete="off">
+        <input type="text" id="text" placeholder="Enter your message here...">
+        <button type="submit">Send</button>
+    </form>
+    <script>
+        const socket = io('http://' + document.domain + ':' + location.port);
+        socket.on('connect', () => {
+            socket.emit('message', 'A new guy has jumped in the chat!');
+        });
+
+        socket.on('message', (msg) => {
+            $('#chat').append($('<p>' + msg + '</p>'));
+            $('#chat').scrollTop($('#chat')[0].scrollHeight);
+        });
+
+        $('#form').submit((e) => {
+            e.preventDefault();
+            const msg = $('input').val();
+            if (msg.trim()){
+                socket.emit('message', msg);
+                $('input').val('');
+            }
+            $('#input').val('');
+        });
+    </script>
+</body>
+</html>

@@ -19,6 +19,7 @@ def receive():
 def send(msg):
     client.send(msg.encode('utf-8'))
 
+
 client_name = input("Enter your name: ")
 send(client_name)
 
